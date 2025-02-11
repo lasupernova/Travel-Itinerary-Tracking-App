@@ -28,3 +28,22 @@ logging.info(f"Pulling info from Notion db with ID: {os.environ['DB_ID']}")
 date_string = "2026-02-12"
 format_string = "%Y-%m-%d"
 today = datetime.strptime(date_string, format_string)
+
+# initiate notion client to query databases and pages
+notion = Client(auth=token)
+
+# Construct the filter to ensure "Planned Stay" property is not empty, to ensure all returned results are scheduled in itinerary
+filter = {
+    "property": "Planned Stay",
+    "date": {
+        "is_not_empty": True
+    }
+}
+
+all_results = collect_paginated_api(
+    notion.databases.query, 
+    database_id=itinerary_db_id, 
+    filter=filter
+)
+
+logging.info(all_results)
