@@ -12,6 +12,12 @@ format='%(asctime)s %(levelname)s %(message)s')
 #       filename='./tmp/myapp.log',
     #   filemode='w'
 
+def is_date_in_range(target_date, start_date, end_date):
+    """
+    Checks if a target date falls within the given range.
+    target_date, start_date, end_date are of type datetime
+    """
+    return start_date <= target_date <= end_date
 
 logging.info(f"Started travel app.")
 
@@ -46,4 +52,6 @@ all_results = collect_paginated_api(
     filter=filter
 )
 
-logging.info(all_results)
+
+
+# logging.info(all_results)
