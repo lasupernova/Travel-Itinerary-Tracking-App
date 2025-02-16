@@ -65,7 +65,7 @@ def travel_info(itinerary:dict):
             country_info[date] = dict()
             country_info[date]['country'] = country
         # get info (currency and lat/long) per country        
-        country_data = CountryInfo(country).info()
+        country_data = CountryInfo(country[0]).info()
     #     print(date, country, country_info)
         current_currency = country_data['currencies'][0]
         lat, lon = country_data['capital_latlng']
