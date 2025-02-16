@@ -20,7 +20,23 @@ def is_date_in_range(target_date, start_date, end_date):
     return start_date <= target_date <= end_date
 
 def current_country(scheduled_countries:list, today=datetime.today().date()):
-    print(today)
+    """
+    Takes a Notion database itinerary in list format and a datetime object.
+    Extracts information of country that is listed in itinerary for the input datetime object.
+    Returns a tuple.
+
+    Input:
+        scheduled_countries (list) - Notion database information. 
+        today (datetime) - date search for in list
+
+    Returns:
+        tuple (
+            i (int): index of current iteration,
+            country (dict): Notion page / country info for current iteration,
+            country_name (str): country that corresponds to input date,
+            country_page_id (str): Notion page ID for corresponding country page (country page is a child of the Notion database corresponding to the input list)
+        )
+    """
     for i, country in enumerate(scheduled_countries):
         try:
             start_date_str = (country['properties']['Planned Stay']['date']['start'])
