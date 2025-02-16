@@ -1,4 +1,5 @@
 import os
+import requests
 import logging
 from datetime import date, datetime
 import pandas as pd
@@ -54,6 +55,31 @@ def current_country(scheduled_countries:list, today=datetime.today().date()):
             return i, country, country_name, country_page_id
         else:
             continue
+
+def travel_info(itinerary:dict):
+    country_info = {}
+
+    for date, country in itinerary.items():
+        if date not in country_info:
+            country_info[date] = dict()
+            country_info[date]['country'] = country
+        # get info (currency and lat/long) per country        
+        country_data = CountryInfo(country).info()
+    #     print(date, country, country_info)
+        current_currency = country_data['currencies'][0]
+        lat, lon = country_data['capital_latlng']
+        # get currency exchange rate via API
+        exchange_rate = requests.get("https://api.fxratesapi.com/latest").json()['rates'][current_currency]
+        # get weather for country on date
+        weather_api = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m&current=relative_humidity_2m&current=precipitation_probability&current=cloud_cover"
+        time, x, temp, humidity, rain_prob, cloud_cover = requests.get(weather_api).json()['current'].values()
+        
+        # add exchange rate and weather data to country_info dict      
+        country_info[date]['exchange'] = exchange_rate
+        country_info[date]['temp'] = temp
+        country_info[date]['rain_prob'] = rain_prob
+        country_info[date]['cloud_cover'] = cloud_cover
+    return country_info
 
 logging.info(f"Started travel app.")
 
