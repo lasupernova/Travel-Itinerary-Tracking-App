@@ -3,6 +3,7 @@ import requests
 import logging
 from datetime import date, datetime
 import pandas as pd
+from countryinfo import CountryInfo
 from notion_client import Client
 from notion_client.helpers import get_id
 from notion_client.helpers import collect_paginated_api
