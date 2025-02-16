@@ -19,6 +19,26 @@ def is_date_in_range(target_date, start_date, end_date):
     """
     return start_date <= target_date <= end_date
 
+def current_country(scheduled_countries:list, today=datetime.today().date()):
+    print(today)
+    for i, country in enumerate(scheduled_countries):
+        try:
+            start_date_str = (country['properties']['Planned Stay']['date']['start'])
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+
+            end_date_str = (country['properties']['Planned Stay']['date']['end'])
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        except Exception as e:
+            continue
+        
+        if is_date_in_range(today, start_date, end_date):
+            country_name = country['properties']['Country']['title'][0]['text']['content']
+            country_page_id = country['id']
+            
+            return i, country, country_name, country_page_id
+        else:
+            continue
+
 logging.info(f"Started travel app.")
 
 # get personal Notion token from env variables; see Notion documentation to obtain token here: https://developers.notion.com/reference/create-a-token
