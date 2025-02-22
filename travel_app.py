@@ -19,6 +19,7 @@ def is_date_in_range(target_date, start_date, end_date):
     Checks if a target date falls within the given range.
     target_date, start_date, end_date are of type datetime
     """
+    print(type(target_date), type(start_date))
     return start_date <= target_date <= end_date
 
 def current_country(scheduled_countries:list, today=datetime.today().date()):
@@ -96,7 +97,7 @@ logging.info(f"Pulling info from Notion db with ID: {os.environ['DB_ID']}")
 # today = date.today()  #use future date that IS in Notion database for testing --> else error will be thrown as current_country() will return None
 date_string = "2026-02-12"
 format_string = "%Y-%m-%d"
-today = datetime.strptime(date_string, format_string)
+today = datetime.strptime(date_string, format_string).date()
 
 # initiate notion client to query databases and pages
 notion = Client(auth=token)
@@ -116,5 +117,18 @@ all_results = collect_paginated_api(
 )
 
 
+current_countries = dict()
+datelist = pd.date_range(today, periods=4).tolist()
+# print(f"datelist is a: {type(datelist)}")
 
-# logging.info(all_results)
+for i in datelist:
+    entry_info = current_country(all_results, i.to_pydatetime().date())
+#     print(entry_info)
+    if entry_info:
+        country_to_add = entry_info[2]
+        page_id = entry_info[3]
+        current_countries[i.strftime("%Y-%m-%d")]= (country_to_add.strip(), page_id)
+    else:
+        continue
+
+logging.info(entry_info)
