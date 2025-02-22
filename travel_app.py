@@ -122,7 +122,7 @@ datelist = pd.date_range(today, periods=4).tolist()
 # print(f"datelist is a: {type(datelist)}")
 
 for i in datelist:
-    entry_info = current_country(all_results, i.date())
+    entry_info = current_country(all_results, i.date())  #i.date() to convert pandas date object into datetime date for comparison of datetime dates in function used
 #     print(entry_info)
     if entry_info:
         country_to_add = entry_info[2]
