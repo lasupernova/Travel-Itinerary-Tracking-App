@@ -19,7 +19,6 @@ def is_date_in_range(target_date, start_date, end_date):
     Checks if a target date falls within the given range.
     target_date, start_date, end_date are of type datetime
     """
-    print(type(target_date), type(start_date))
     return start_date <= target_date <= end_date
 
 def current_country(scheduled_countries:list, today=datetime.today().date()):
@@ -124,7 +123,6 @@ logging.info(f"Extracting info for countries visited between {datelist[0].date()
 
 for i in datelist:
     entry_info = current_country(all_results, i.date())  #i.date() to convert pandas date object into datetime date for comparison of datetime dates in function used
-#     print(entry_info)
     if entry_info:
         country_to_add = entry_info[2]
         page_id = entry_info[3]
