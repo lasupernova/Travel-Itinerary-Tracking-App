@@ -119,7 +119,8 @@ all_results = collect_paginated_api(
 
 current_countries = dict()
 datelist = pd.date_range(today, periods=4).tolist()
-# print(f"datelist is a: {type(datelist)}")
+
+logging.info(f"Extracting info for countries visited between {datelist[0].date()} and {datelist[-1].date()}.")
 
 for i in datelist:
     entry_info = current_country(all_results, i.date())  #i.date() to convert pandas date object into datetime date for comparison of datetime dates in function used
