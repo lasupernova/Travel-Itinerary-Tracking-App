@@ -130,4 +130,6 @@ for i in datelist:
     else:
         continue
 
-logging.info(entry_info)
+test_info_output = travel_info(current_countries)
+
+logging.info(test_info_output)
