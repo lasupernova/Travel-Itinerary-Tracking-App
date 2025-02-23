@@ -1,8 +1,14 @@
 import flet as ft
+# import travel_app
+import os
 
+
+# travel_app.
+token = os.environ['NOTION_TOKEN']
+itinerary_db_id = os.environ['DB_ID']  
 
 def main(page: ft.Page):
-    counter = ft.Text("0", size=50, data=0)
+    counter = ft.Text(token, size=50, data=0)
 
     def increment_click(e):
         counter.data += 1
