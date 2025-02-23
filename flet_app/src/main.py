@@ -1,14 +1,15 @@
 import flet as ft
-from travel_app import *
+from travel_app import notion, itinerary_db_id, today, filter, collect_paginated_api
 import os
 
-
-# travel_app.
-token = os.environ['NOTION_TOKEN']
-itinerary_db_id = os.environ['DB_ID']  
+all_results = collect_paginated_api(
+    notion.databases.query, 
+    database_id=itinerary_db_id, 
+    filter=filter
+)
 
 def main(page: ft.Page):
-    counter = ft.Text(token, size=50, data=0)
+    counter = ft.Text(all_results, size=50, data=0)
 
     def increment_click(e):
         counter.data += 1
