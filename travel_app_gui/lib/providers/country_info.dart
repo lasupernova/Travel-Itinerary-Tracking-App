@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class CountryInfo {
   // const PropertyItem({Key? key}) : super(key: key);
   String id;
