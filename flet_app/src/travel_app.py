@@ -82,54 +82,58 @@ def travel_info(itinerary:dict):
         country_info[date]['cloud_cover'] = cloud_cover
     return country_info
 
-logging.info(f"Started travel app.")
+def main():
+    logging.info(f"Started travel app.")
 
-# get personal Notion token from env variables; see Notion documentation to obtain token here: https://developers.notion.com/reference/create-a-token
-token = os.environ['NOTION_TOKEN']
-logging.info(f"Notion Token {os.environ['NOTION_TOKEN']}")
+    # get personal Notion token from env variables; see Notion documentation to obtain token here: https://developers.notion.com/reference/create-a-token
+    token = os.environ['NOTION_TOKEN']
+    logging.info(f"Notion Token {os.environ['NOTION_TOKEN']}")
 
-# get id for main database containing the itinerary overview
-itinerary_db_id = os.environ['DB_ID']  
-logging.info(f"Pulling info from Notion db with ID: {os.environ['DB_ID']}")
+    # get id for main database containing the itinerary overview
+    itinerary_db_id = os.environ['DB_ID']  
+    logging.info(f"Pulling info from Notion db with ID: {os.environ['DB_ID']}")
 
-# define date to use for app (for testing: use date that is contained in Notion db, otherwise use today)
-# today = date.today()  #use future date that IS in Notion database for testing --> else error will be thrown as current_country() will return None
-date_string = "2026-02-12"
-format_string = "%Y-%m-%d"
-today = datetime.strptime(date_string, format_string).date()
+    # define date to use for app (for testing: use date that is contained in Notion db, otherwise use today)
+    # today = date.today()  #use future date that IS in Notion database for testing --> else error will be thrown as current_country() will return None
+    date_string = "2026-02-12"
+    format_string = "%Y-%m-%d"
+    today = datetime.strptime(date_string, format_string).date()
 
-# initiate notion client to query databases and pages
-notion = Client(auth=token)
+    # initiate notion client to query databases and pages
+    notion = Client(auth=token)
 
-# Construct the filter to ensure "Planned Stay" property is not empty, to ensure all returned results are scheduled in itinerary
-filter = {
-    "property": "Planned Stay",
-    "date": {
-        "is_not_empty": True
+    # Construct the filter to ensure "Planned Stay" property is not empty, to ensure all returned results are scheduled in itinerary
+    filter = {
+        "property": "Planned Stay",
+        "date": {
+            "is_not_empty": True
+        }
     }
-}
 
-all_results = collect_paginated_api(
-    notion.databases.query, 
-    database_id=itinerary_db_id, 
-    filter=filter
-)
+    all_results = collect_paginated_api(
+        notion.databases.query, 
+        database_id=itinerary_db_id, 
+        filter=filter
+    )
 
 
-current_countries = dict()
-datelist = pd.date_range(today, periods=4).tolist()
+    current_countries = dict()
+    datelist = pd.date_range(today, periods=4).tolist()
 
-logging.info(f"Extracting info for countries visited between {datelist[0].date()} and {datelist[-1].date()}.")
+    logging.info(f"Extracting info for countries visited between {datelist[0].date()} and {datelist[-1].date()}.")
 
-for i in datelist:
-    entry_info = current_country(all_results, i.date())  #i.date() to convert pandas date object into datetime date for comparison of datetime dates in function used
-    if entry_info:
-        country_to_add = entry_info[2]
-        page_id = entry_info[3]
-        current_countries[i.strftime("%Y-%m-%d")]= (country_to_add.strip(), page_id)
-    else:
-        continue
+    for i in datelist:
+        entry_info = current_country(all_results, i.date())  #i.date() to convert pandas date object into datetime date for comparison of datetime dates in function used
+        if entry_info:
+            country_to_add = entry_info[2]
+            page_id = entry_info[3]
+            current_countries[i.strftime("%Y-%m-%d")]= (country_to_add.strip(), page_id)
+        else:
+            continue
 
-test_info_output = travel_info(current_countries)
+    test_info_output = travel_info(current_countries)
 
-logging.info(test_info_output)
+    logging.info(test_info_output)
+
+if __name__ == "__main__":
+    main()
