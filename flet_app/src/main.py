@@ -1,5 +1,5 @@
 import flet as ft
-# import travel_app
+from travel_app import *
 import os
 
 
